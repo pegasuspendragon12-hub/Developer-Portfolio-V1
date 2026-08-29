@@ -16,12 +16,7 @@ export function Oneko() {
     let idleTime = 0;
     let idleAnimation: string | null = null;
     let idleAnimationFrame = 0;
-    const nekoSpeed = 10;
-    const followDelayMs = 2000; // 2 seconds delay
-
-    const mouseHistory: { x: number; y: number; time: number }[] = [
-      { x: nekoPosX, y: nekoPosY, time: Date.now() },
-    ];
+    const nekoSpeed = 13;
 
     const spriteSets: Record<string, [number, number][]> = {
       idle: [[-3, -3]],
@@ -119,23 +114,12 @@ export function Oneko() {
     function frame() {
       frameCount += 1;
 
-      const now = Date.now();
-      const targetTime = now - followDelayMs;
-
-      while (mouseHistory.length > 1 && mouseHistory[1].time <= targetTime) {
-        mouseHistory.shift();
-      }
-
-      if (mouseHistory.length > 0 && mouseHistory[0].time <= targetTime) {
-        mousePosX = mouseHistory[0].x;
-        mousePosY = mouseHistory[0].y;
-      }
-
       const diffX = nekoPosX - mousePosX;
       const diffY = nekoPosY - mousePosY;
-      const distance = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
+      const distance = Math.sqrt(diffX * diffX + diffY * diffY);
 
-      if (distance < nekoSpeed || distance < 48) {
+      // Cat is close enough to cursor — stay in / enter idle state
+      if (distance < 32) {
         idle();
         return;
       }
@@ -143,21 +127,28 @@ export function Oneko() {
       idleAnimation = null;
       idleAnimationFrame = 0;
 
+      // Brief wake-up alert delay when transitioning from static idle
       if (idleTime > 1) {
         setSprite("alert", 0);
-        idleTime = Math.min(idleTime, 7);
+        idleTime = Math.min(idleTime, 2);
         idleTime -= 1;
         return;
       }
+
+      // Cat is awake and actively chasing cursor
+      idleTime = 0;
 
       let direction = diffY / distance > 0.5 ? "N" : "";
       direction += diffY / distance < -0.5 ? "S" : "";
       direction += diffX / distance > 0.5 ? "W" : "";
       direction += diffX / distance < -0.5 ? "E" : "";
 
-      setSprite(direction, frameCount);
-      nekoPosX -= (diffX / distance) * nekoSpeed;
-      nekoPosY -= (diffY / distance) * nekoSpeed;
+      setSprite(direction || "idle", frameCount);
+
+      // Smooth step towards cursor
+      const step = Math.min(distance, nekoSpeed);
+      nekoPosX -= (diffX / distance) * step;
+      nekoPosY -= (diffY / distance) * step;
 
       nekoEl.style.left = `${nekoPosX - 16}px`;
       nekoEl.style.top = `${nekoPosY - 16}px`;
@@ -177,11 +168,8 @@ export function Oneko() {
     document.body.appendChild(nekoEl);
 
     const handleMouseMove = (event: MouseEvent) => {
-      mouseHistory.push({
-        x: event.clientX,
-        y: event.clientY,
-        time: Date.now(),
-      });
+      mousePosX = event.clientX;
+      mousePosY = event.clientY;
     };
 
     document.addEventListener("mousemove", handleMouseMove);

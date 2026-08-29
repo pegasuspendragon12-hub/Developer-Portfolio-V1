@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState, useRef, useEffect, useCallback } from "react";
+import { motion } from "framer-motion";
 import { SmoothCursor } from "@/components/ui/smooth-cursor";
 import { ReactLenis, useLenis } from "lenis/react";
 import { Oneko } from "@/components/ui/oneko";
@@ -64,7 +65,24 @@ function ScrambleLink({ text, href }: { text: string; href: string }) {
 
 function Tag({ label }: { label: string }) {
   return (
-    <span className="inline-flex items-center justify-center rounded-[5px] border border-[#E0E0E0] px-2 py-1 text-[12px] font-bold leading-[10px] tracking-[1px] text-[#818181]">
+    <span
+      style={{
+        display: 'inline-flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '3px 7px',
+        border: '1px solid #E0E0E0',
+        borderRadius: 4,
+        fontFamily: "'Clash Grotesk', sans-serif",
+        fontWeight: 700,
+        fontSize: 10,
+        lineHeight: '10px',
+        letterSpacing: 0.5,
+        color: '#818181',
+        boxSizing: 'border-box',
+      }}
+    >
       {label}
     </span>
   );
@@ -81,25 +99,203 @@ function ProjectCard({
   tags: string[];
   bgColor: string;
 }) {
+  const [isHovered, setIsHovered] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
+
   return (
-    <div className="flex flex-col">
-      {/* Card image placeholder */}
+    <div
+      style={{ display: 'flex', flexDirection: 'column', width: '100%' }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Card image with zoom in effect and smooth white circle cursor */}
       <div
-        className="w-full aspect-[530/328] rounded-[30px]"
-        style={{ backgroundColor: bgColor }}
-      />
-      {/* Card info — title row + description */}
-      <div className="mt-[56px] flex items-center justify-between">
-        <h3 className="font-bold text-[48px] leading-[35px] tracking-[-1px] text-black">
+        onMouseMove={handleMouseMove}
+        style={{
+          width: '100%',
+          aspectRatio: '16 / 9',
+          borderRadius: 24,
+          overflow: 'hidden',
+          backgroundColor: bgColor,
+          position: 'relative',
+        }}
+      >
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            backgroundColor: bgColor,
+            borderRadius: 24,
+            transform: isHovered ? 'scale(1.06)' : 'scale(1)',
+            transition: 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)',
+          }}
+        />
+
+        {/* Big border-only white circle following cursor */}
+        <motion.div
+          initial={false}
+          animate={{
+            x: mousePos.x,
+            y: mousePos.y,
+            scale: isHovered ? 1 : 0,
+            opacity: isHovered ? 1 : 0,
+          }}
+          transition={{
+            type: "spring",
+            damping: 24,
+            stiffness: 300,
+            mass: 0.35,
+          }}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: 88,
+            height: 88,
+            marginLeft: -44,
+            marginTop: -44,
+            borderRadius: "50%",
+            border: "2px solid rgba(255, 255, 255, 0.95)",
+            pointerEvents: "none",
+            zIndex: 10,
+            boxShadow: "0 0 20px rgba(255, 255, 255, 0.15)",
+          }}
+        />
+
+        {/* Centered "View Details" badge with perfect vertical & horizontal alignment */}
+        <motion.div
+          initial={false}
+          animate={{
+            opacity: isHovered ? 1 : 0,
+            scale: isHovered ? 1 : 0.85,
+          }}
+          transition={{
+            type: "spring",
+            damping: 22,
+            stiffness: 280,
+            mass: 0.4,
+          }}
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            translateX: "-50%",
+            translateY: "-50%",
+            height: 38,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 10,
+            padding: "0 6px 0 16px",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+            border: "1px solid rgba(255, 255, 255, 0.25)",
+            borderRadius: 9999,
+            pointerEvents: "none",
+            zIndex: 15,
+            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.35)",
+            boxSizing: "border-box",
+          }}
+        >
+          <span
+            style={{
+              fontFamily: "'Clash Grotesk', sans-serif",
+              fontWeight: 600,
+              fontSize: 12,
+              lineHeight: 1,
+              letterSpacing: 1.2,
+              color: "#FFFFFF",
+              textTransform: "uppercase",
+              userSelect: "none",
+              display: "inline-flex",
+              alignItems: "center",
+            }}
+          >
+            View Details
+          </span>
+          <div
+            style={{
+              width: 26,
+              height: 26,
+              borderRadius: "50%",
+              backgroundColor: "#FFFFFF",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 12 12"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M2.5 6H9.5M9.5 6L6 2.5M9.5 6L6 9.5"
+                stroke="#000000"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Title row — tighter spacing to image and turns purple when hovered */}
+      <div
+        style={{
+          marginTop: 16,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <h3
+          style={{
+            fontFamily: "'Clash Grotesk', sans-serif",
+            fontWeight: 700,
+            fontSize: 28,
+            lineHeight: '26px',
+            letterSpacing: -0.5,
+            color: isHovered ? '#8B5CF6' : '#000000',
+            transition: 'color 0.3s cubic-bezier(0.25, 1, 0.5, 1)',
+            margin: 0,
+          }}
+        >
           {title}
         </h3>
-        <div className="flex items-center gap-3">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           {tags.map((tag) => (
             <Tag key={tag} label={tag} />
           ))}
         </div>
       </div>
-      <p className="mt-[19px] max-w-[394px] font-medium text-[16px] leading-[25px] tracking-[1px] text-[#818181]">
+
+      {/* Description — smaller font and tighter spacing to title */}
+      <p
+        style={{
+          marginTop: 6,
+          maxWidth: 380,
+          fontFamily: "'Clash Grotesk', sans-serif",
+          fontWeight: 500,
+          fontSize: 13.5,
+          lineHeight: '20px',
+          letterSpacing: 0.5,
+          color: '#818181',
+        }}
+      >
         {description}
       </p>
     </div>
@@ -200,7 +396,7 @@ function ScrollRevealSection() {
 export default function Home() {
   return (
     <ReactLenis root options={{ lerp: 0.08, duration: 1.2, smoothWheel: true }}>
-      <main className="w-full bg-[#F6F6F6] cursor-none">
+      <main className="w-full bg-white cursor-none">
         <SmoothCursor />
         <Oneko />
         {/* ============================================= */}
@@ -334,51 +530,83 @@ export default function Home() {
         {/* ============================================= */}
         <section
           id="works"
-          className="mx-auto max-w-[1440px] px-[143px] pt-[192px] pb-[508px]"
+          style={{
+            maxWidth: 1440,
+            margin: '0 auto',
+            paddingTop: 87,
+            paddingBottom: 240,
+            paddingLeft: 48,
+            paddingRight: 48,
+            background: 'rgb(255, 255, 255)',
+          }}
         >
-          {/* "MY WORKS." heading */}
+          {/* "MY WORKS." heading — flush to the left wall */}
           <h2
-            className="max-w-[798px] font-bold text-black text-right"
             style={{
-              fontSize: "clamp(80px, 10.7vw, 154px)",
-              lineHeight: "0.91em",
-              letterSpacing: "-7px",
+              fontFamily: "'Clash Grotesk', sans-serif",
+              fontWeight: 700,
+              fontSize: 'clamp(72px, 10vw, 154px)',
+              lineHeight: '0.91em',
+              letterSpacing: '-6px',
+              textAlign: 'left',
+              color: '#000000',
+              margin: 0,
             }}
           >
             MY WORKS.
           </h2>
 
-          {/* Subtitle */}
-          <p className="mt-[56px] max-w-[464px] font-medium text-[22px] leading-[38px] tracking-[1px] text-[#818181]">
+          {/* Subtitle — moved closer to heading with 18px font size and clean line spacing */}
+          <p
+            style={{
+              marginTop: 18,
+              maxWidth: 440,
+              fontFamily: "'Clash Grotesk', sans-serif",
+              fontWeight: 500,
+              fontSize: 18,
+              lineHeight: '26px',
+              letterSpacing: 1,
+              color: '#818181',
+              textAlign: 'left',
+            }}
+          >
             A showcase of digital experiences shaped by creativity, detail, and
             intent.
           </p>
 
-          {/* Project cards — 2-column grid */}
-          <div className="mt-[84px] grid grid-cols-2 gap-x-[94px] gap-y-[94px]">
+          {/* Project cards — 2x2 grid spanning edge-to-edge */}
+          <div
+            style={{
+              marginTop: 56,
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+              columnGap: 40,
+              rowGap: 64,
+            }}
+          >
             <ProjectCard
               title="HOTERU"
               description="A seamless hotel booking experience designed to make finding and reserving."
               tags={["FIGMA"]}
-              bgColor="#A9A9A9"
+              bgColor="#000000"
             />
             <ProjectCard
               title="Fathom. AI"
               description="An intuitive generative AI experience designed to turn ideas into creative results."
               tags={["FIGMA", "CODEX"]}
-              bgColor="#FFFFFF"
+              bgColor="#ff0000ff"
             />
             <ProjectCard
               title="HOTERU"
               description="A seamless hotel booking experience designed to make finding and reserving."
               tags={["FIGMA"]}
-              bgColor="#A9A9A9"
+              bgColor="#000000"
             />
             <ProjectCard
               title="Fathom. AI"
               description="An intuitive generative AI experience designed to turn ideas into creative results."
               tags={["FIGMA", "CODEX"]}
-              bgColor="#FFFFFF"
+              bgColor="#000000"
             />
           </div>
         </section>
