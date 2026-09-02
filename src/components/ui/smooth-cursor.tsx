@@ -100,11 +100,11 @@ export function SmoothCursor({
   const lastUpdateTime = useRef(0)
   const previousAngle = useRef(0)
   const accumulatedRotation = useRef(0)
-  const [isEnabled, setIsEnabled] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
 
-  const cursorX = useSpring(0, springConfig)
-  const cursorY = useSpring(0, springConfig)
+  const cursorX = useSpring(-100, springConfig)
+  const cursorY = useSpring(-100, springConfig)
   const rotation = useSpring(0, {
     ...springConfig,
     damping: 60,
@@ -117,29 +117,11 @@ export function SmoothCursor({
   })
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia(DESKTOP_POINTER_QUERY)
-
-    const updateEnabled = () => {
-      const nextIsEnabled = mediaQuery.matches
-      setIsEnabled(nextIsEnabled)
-
-      if (!nextIsEnabled) {
-        setIsVisible(false)
-      }
-    }
-
-    updateEnabled()
-    mediaQuery.addEventListener("change", updateEnabled)
-
-    return () => {
-      mediaQuery.removeEventListener("change", updateEnabled)
-    }
+    setMounted(true)
   }, [])
 
   useEffect(() => {
-    if (!isEnabled) {
-      return
-    }
+    if (!mounted) return
 
     let timeout: ReturnType<typeof setTimeout> | null = null
 
@@ -163,11 +145,7 @@ export function SmoothCursor({
       lastMousePos.current = currentPos
     }
 
-    const smoothPointerMove = (e: PointerEvent) => {
-      if (!isTrackablePointer(e.pointerType)) {
-        return
-      }
-
+    const handlePointerMove = (e: MouseEvent | PointerEvent) => {
       setIsVisible(true)
 
       const currentPos = { x: e.clientX, y: e.clientY }
@@ -204,36 +182,19 @@ export function SmoothCursor({
       }
     }
 
-    let rafId = 0
-    const throttledPointerMove = (e: PointerEvent) => {
-      if (!isTrackablePointer(e.pointerType)) {
-        return
-      }
-
-      if (rafId) return
-
-      rafId = requestAnimationFrame(() => {
-        smoothPointerMove(e)
-        rafId = 0
-      })
-    }
-
-    document.body.style.cursor = "none"
-    window.addEventListener("pointermove", throttledPointerMove, {
-      passive: true,
-    })
+    window.addEventListener("pointermove", handlePointerMove, { passive: true })
+    window.addEventListener("mousemove", handlePointerMove, { passive: true })
 
     return () => {
-      window.removeEventListener("pointermove", throttledPointerMove)
-      document.body.style.cursor = "auto"
-      if (rafId) cancelAnimationFrame(rafId)
+      window.removeEventListener("pointermove", handlePointerMove)
+      window.removeEventListener("mousemove", handlePointerMove)
       if (timeout !== null) {
         clearTimeout(timeout)
       }
     }
-  }, [cursorX, cursorY, rotation, scale, isEnabled])
+  }, [cursorX, cursorY, rotation, scale, mounted])
 
-  if (!isEnabled) {
+  if (!mounted) {
     return null
   }
 
@@ -247,7 +208,7 @@ export function SmoothCursor({
         translateY: "-50%",
         rotate: rotation,
         scale: scale,
-        zIndex: 100,
+        zIndex: 999999,
         pointerEvents: "none",
         willChange: "transform",
         opacity: isVisible ? 1 : 0,

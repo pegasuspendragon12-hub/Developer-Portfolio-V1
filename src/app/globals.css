@@ -53,5 +53,5 @@ body {
   background: rgb(255, 255, 255);
   color: #000000;
   font-family: 'Clash Grotesk', sans-serif;
-  overflow-x: hidden;
+  overflow-x: clip;
 }

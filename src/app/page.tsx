@@ -531,6 +531,7 @@ export default function Home() {
         <section
           id="works"
           style={{
+            width: '100%',
             maxWidth: 1440,
             margin: '0 auto',
             paddingTop: 87,
@@ -538,6 +539,7 @@ export default function Home() {
             paddingLeft: 48,
             paddingRight: 48,
             background: 'rgb(255, 255, 255)',
+            boxSizing: 'border-box',
           }}
         >
           {/* "MY WORKS." heading — flush to the left wall */}
@@ -594,7 +596,7 @@ export default function Home() {
               title="Fathom. AI"
               description="An intuitive generative AI experience designed to turn ideas into creative results."
               tags={["FIGMA", "CODEX"]}
-              bgColor="#ff0000ff"
+              bgColor="#000000"
             />
             <ProjectCard
               title="HOTERU"
