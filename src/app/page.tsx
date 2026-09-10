@@ -317,6 +317,177 @@ function PixelCat() {
   );
 }
 
+function ScrollServicesSection() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [progress, setProgress] = useState(0);
+
+  const services = [
+    { title: "UI/UX DESIGN" },
+    { title: "GRAPHIC DESIGN" },
+    { title: "FIGMA TO CODE" },
+    { title: "WEB DEVELOPMENT" },
+    { title: "DEV OPS" },
+  ];
+
+  const updateProgress = useCallback(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const rect = container.getBoundingClientRect();
+    const scrollableDistance = Math.max(1, container.offsetHeight - window.innerHeight);
+    const nextProgress = Math.max(
+      0,
+      Math.min(1, -rect.top / scrollableDistance)
+    );
+
+    setProgress(nextProgress);
+  }, []);
+
+  useEffect(() => {
+    updateProgress();
+    window.addEventListener("resize", updateProgress);
+    window.addEventListener("scroll", updateProgress, { passive: true });
+
+    return () => {
+      window.removeEventListener("resize", updateProgress);
+      window.removeEventListener("scroll", updateProgress);
+    };
+  }, [updateProgress]);
+
+  useLenis(updateProgress);
+
+  return (
+    <div ref={containerRef} style={{ height: "330vh" }}>
+      <section
+        id="services"
+        className="sticky top-0 flex h-screen flex-col overflow-hidden"
+        style={{
+          width: '100%',
+          maxWidth: 1440,
+          margin: '0 auto',
+          paddingTop: 40,
+          paddingBottom: 48,
+          paddingLeft: 48,
+          paddingRight: 48,
+          background: 'rgb(255, 255, 255)',
+          boxSizing: 'border-box',
+        }}
+      >
+        <h2
+          style={{
+            fontFamily: "'Clash Grotesk', sans-serif",
+            fontWeight: 700,
+            fontSize: 'clamp(72px, 10vw, 154px)',
+            lineHeight: '0.91em',
+            letterSpacing: '-6px',
+            textAlign: 'left',
+            color: '#000000',
+            margin: 0,
+          }}
+        >
+          SERVICES.
+        </h2>
+
+        <div
+          style={{
+            width: '100%',
+            height: 0,
+            marginTop: 12,
+            marginBottom: 54,
+            border: '1px solid #000000',
+          }}
+        />
+
+        <div
+          className="flex flex-1 flex-col"
+          style={{ gap: 34, paddingTop: 18 }}
+        >
+          {services.map((service, index) => {
+            const isFirst = index === 0;
+            const isLast = index === services.length - 1;
+            const revealStart = isLast ? 0.76 : 0.16 + (index - 1) * 0.2;
+            const revealEnd = isLast ? 0.94 : revealStart + 0.18;
+            const itemProgress = isFirst
+              ? 1
+              : Math.max(0, Math.min(1, (progress - revealStart) / (revealEnd - revealStart)));
+
+            return (
+              <motion.h3
+                key={index}
+                initial={false}
+                animate={{
+                  opacity: isFirst ? 1 : Math.max(0, Math.min(1, itemProgress)),
+                  y: isFirst ? 0 : 80 * (1 - Math.max(0, Math.min(1, itemProgress))),
+                  filter: isFirst ? 'blur(0px)' : `blur(${(1 - Math.max(0, Math.min(1, itemProgress))) * 12}px)`,
+                }}
+                transition={{
+                  duration: 0.7,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                style={{
+                  fontFamily: "'Clash Grotesk', sans-serif",
+                  fontStyle: 'normal',
+                  fontWeight: 700,
+                  fontSize: 'clamp(32px, 4vw, 52px)',
+                  lineHeight: '1.18',
+                  textAlign: 'left',
+                  letterSpacing: '-2px',
+                  color: '#000000',
+                  margin: 0,
+                  visibility: isFirst || itemProgress > 0.01 ? "visible" : "hidden",
+                  willChange: "opacity, transform, filter",
+                  display: 'block',
+                }}
+              >
+                {service.title}
+              </motion.h3>
+            );
+          })}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function TechStackSection() {
+  const technologies = [
+    { name: "Figma", category: "UI Design" },
+    { name: "Mongo DB", category: "Database" },
+    { name: "Vercel", category: "Hosting" },
+    { name: "Framer", category: "UI Design" },
+    { name: "Render", category: "Hosting" },
+    { name: "Azure", category: "Cloud" },
+    { name: "Netlify", category: "Cloud" },
+    { name: "Supabase", category: "Cloud/DB" },
+    { name: "N8N", category: "Cloud/Automation" },
+    { name: "GPT Codex", category: "AI" },
+    { name: "Git/Github", category: "Version Control" },
+    { name: "Claude Code", category: "AI" },
+  ];
+
+  return (
+    <section id="tech-stack" className="tech-stack-section">
+      <div className="tech-stack-intro">
+        <h2>SKILL STACK</h2>
+        <p>
+          A curated stack of tools and technologies I use to bring thoughtful,
+          high-performance web experiences to life.
+        </p>
+      </div>
+
+      <div className="tech-stack-list">
+        {technologies.map((technology, index) => (
+          <div className="tech-stack-row" key={technology.name}>
+            <span className="tech-stack-index">{index + 1}</span>
+            <strong>{technology.name}</strong>
+            <span className="tech-stack-category">{technology.category}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function ScrollRevealSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
@@ -395,7 +566,16 @@ function ScrollRevealSection() {
 
 export default function Home() {
   return (
-    <ReactLenis root options={{ lerp: 0.08, duration: 1.2, smoothWheel: true }}>
+    <ReactLenis
+      root
+      options={{
+        lerp: 0.06,
+        duration: 1.4,
+        smoothWheel: true,
+        wheelMultiplier: 0.85,
+        touchMultiplier: 1,
+      }}
+    >
       <main className="w-full bg-white cursor-none">
         <SmoothCursor />
         <Oneko />
@@ -534,7 +714,7 @@ export default function Home() {
             width: '100%',
             maxWidth: 1440,
             margin: '0 auto',
-            paddingTop: 87,
+            paddingTop: 40,
             paddingBottom: 240,
             paddingLeft: 48,
             paddingRight: 48,
@@ -612,6 +792,16 @@ export default function Home() {
             />
           </div>
         </section>
+
+        {/* ============================================= */}
+        {/* SERVICES SECTION — scroll reveal animation     */}
+        {/* ============================================= */}
+        <ScrollServicesSection />
+
+        {/* ============================================= */}
+        {/* TECH STACK SECTION                             */}
+        {/* ============================================= */}
+        <TechStackSection />
       </main>
     </ReactLenis>
   );
