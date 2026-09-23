@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState, type FC } from "react"
+import { useEffect, useRef, useState, useSyncExternalStore, type FC } from "react"
 import { motion, useSpring } from "framer-motion"
 
 interface Position {
@@ -18,11 +18,9 @@ export interface SmoothCursorProps {
   }
 }
 
-const DESKTOP_POINTER_QUERY = "(any-hover: hover) and (any-pointer: fine)"
-
-function isTrackablePointer(pointerType: string) {
-  return pointerType !== "touch"
-}
+const subscribeToMount = () => () => undefined
+const getServerMountState = () => false
+const getClientMountState = () => true
 
 const DefaultCursorSVG: FC = () => {
   return (
@@ -100,7 +98,7 @@ export function SmoothCursor({
   const lastUpdateTime = useRef(0)
   const previousAngle = useRef(0)
   const accumulatedRotation = useRef(0)
-  const [mounted, setMounted] = useState(false)
+  const mounted = useSyncExternalStore(subscribeToMount, getClientMountState, getServerMountState)
   const [isVisible, setIsVisible] = useState(false)
 
   const cursorX = useSpring(-100, springConfig)
@@ -115,10 +113,6 @@ export function SmoothCursor({
     stiffness: 500,
     damping: 35,
   })
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   useEffect(() => {
     if (!mounted) return

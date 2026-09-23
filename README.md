@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pegasus Portfolio
 
-## Getting Started
+A Next.js portfolio for Pegasus, a designer and developer focused on thoughtful interfaces and high-performance web experiences.
 
-First, run the development server:
+## Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Next.js App Router
+- React and TypeScript
+- Tailwind CSS and custom CSS
+- Framer Motion
+- Lenis smooth scrolling
+- Clash Grotesk via Fontshare
+
+## Project structure
+
+```text
+src/
+  app/                 Next.js route entry, layout, and global styles
+  components/
+    sections/          Hero, About, Works, Services, and Skill Stack
+    effects/            Pixel-art effects
+    site/               Project cards and navigation interactions
+    ui/                 Cursor and reusable UI components
+  lib/                 Shared utilities
+public/
+  images/hero/         Hero imagery
+  images/decorative/   Pixel-art and cursor assets
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Next.js and tooling configuration files remain at the repository root because the framework discovers them there.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Development
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Install dependencies and start the development server:
 
-## Learn More
+```bash
+npm install
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Open <http://localhost:3000> in your browser.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Useful checks:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run lint
+npm run build
+```
 
-## Deploy on Vercel
+## Figma MCP setup
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Copy `.vscode/mcp.json.example` to `.vscode/mcp.json`. VS Code will prompt for the Figma API key when the MCP server starts.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+For Cline, set `FIGMA_API_KEY` in the environment before starting the editor. The local MCP configuration files are ignored by Git and must not be committed.
+
+Never place an API key in a tracked file. If a key has been committed previously, revoke it and create a replacement before publishing the repository.

@@ -6,11 +6,19 @@
       "args": [
         "-y",
         "figma-developer-mcp",
-        "--figma-api-key=figd_0WKmzYXk6TtAOtkZcsKSNFOM1ywrNeLq-LtX4TLW",
+        "--figma-api-key=${input:figmaApiKey}",
         "--stdio",
         "--image-dir",
         ".figma"
       ]
     }
-  }
+  },
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "figmaApiKey",
+      "description": "Figma API key",
+      "password": true
+    }
+  ]
 }
