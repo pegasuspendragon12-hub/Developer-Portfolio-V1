@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactLenis } from "lenis/react";
-import { AboutSection, HeroSection, ServicesSection, SkillStackSection, WorksSection } from "@/components/sections";
+import { AboutSection, ContactSection, FooterSection, HeroSection, ServicesSection, SkillStackSection, WorksSection } from "@/components/sections";
 import { Oneko } from "@/components/ui/oneko";
 import { SmoothCursor } from "@/components/ui/smooth-cursor";
 
@@ -16,6 +16,8 @@ export default function Home() {
         <WorksSection />
         <ServicesSection />
         <SkillStackSection />
+        <ContactSection />
+        <FooterSection />
       </main>
     </ReactLenis>
   );

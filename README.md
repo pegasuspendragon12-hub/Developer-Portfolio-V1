@@ -19,6 +19,8 @@ The implementation is responsive and adapts the desktop Figma composition for sm
 - Smooth Lenis scrolling across the page
 - Scroll-based About and Services interactions
 - Animated service text reveals
+- Figma-measured Contact section with service selection and email submission
+- Full-width responsive footer with social and project metadata links
 - Interactive project cards with hover states and cursor feedback
 - Custom smooth cursor and pixel-art cursor companion
 - Optimized local image handling through Next.js
@@ -80,6 +82,8 @@ src/
       works-section.tsx
       services-section.tsx
       skill-stack-section.tsx
+      contact-section.tsx
+      footer-section.tsx
       index.ts
 
     effects/
@@ -181,6 +185,10 @@ cline_mcp_config.json
 ```
 
 Never commit a real API key. The example configuration files are the files intended for the public repository. If a key has ever been committed or shared, revoke it and create a replacement before publishing.
+
+## Contact and footer
+
+The Contact section is implemented from the supplied Figma measurements and includes a service selector, email field, and send action. The Footer section follows the same centered desktop frame and expands to full viewport width on larger screens, with responsive stacking on smaller screens.
 
 ## Open-source notes
 
