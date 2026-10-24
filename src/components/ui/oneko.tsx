@@ -4,6 +4,8 @@ import { useEffect } from "react";
 
 export function Oneko() {
   useEffect(() => {
+    if (window.matchMedia("(max-width: 600px)").matches) return;
+
     // Prevent duplicate cat instances
     if (document.getElementById("oneko")) return;
 

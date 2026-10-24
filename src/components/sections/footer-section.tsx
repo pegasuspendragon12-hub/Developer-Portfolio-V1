@@ -24,7 +24,16 @@ export function FooterSection() {
 
         <div className="site-footer-meta">
           <span>Located in India</span>
-          <span className="site-footer-name">@Pegasus</span>
+          <span className="site-footer-name" aria-label="@Pegasus">
+            <span className="site-footer-name-track" aria-hidden="true">
+              <span className="site-footer-name-group">
+                {Array.from({ length: 5 }, (_, index) => <span key={`first-${index}`}>@Pegasus</span>)}
+              </span>
+              <span className="site-footer-name-group">
+                {Array.from({ length: 5 }, (_, index) => <span key={`second-${index}`}>@Pegasus</span>)}
+              </span>
+            </span>
+          </span>
           <span>5231 visits</span>
         </div>
       </div>

@@ -31,7 +31,7 @@ export function ServicesSection() {
 
   return (
     <div ref={containerRef} style={{ height: "330vh" }}>
-      <section id="services" className="sticky top-0 flex h-screen flex-col overflow-hidden" style={{ width: "100%", maxWidth: 1440, margin: "0 auto", padding: "40px 48px 48px", background: "rgb(255, 255, 255)", boxSizing: "border-box" }}>
+      <section id="services" className="services-section sticky top-0 flex h-screen flex-col overflow-hidden" style={{ width: "100%", maxWidth: 1440, margin: "0 auto", padding: "40px 48px 48px", background: "rgb(255, 255, 255)", boxSizing: "border-box" }}>
         <h2 style={{ fontFamily: "'Clash Grotesk', sans-serif", fontWeight: 700, fontSize: "clamp(72px, 10vw, 154px)", lineHeight: "0.91em", letterSpacing: "-6px", textAlign: "left", color: "#000000", margin: 0 }}>SERVICES.</h2>
         <div style={{ width: "100%", height: 0, marginTop: 12, marginBottom: 54, border: "1px solid #000000" }} />
         <div className="flex flex-1 flex-col" style={{ gap: 34, paddingTop: 18 }}>
